@@ -45,7 +45,7 @@ class _MyAppExtensionState extends State<MyAppExtension> {
             ? Container(
                 width: double.infinity,
                 height: double.infinity,
-                color: Colors.red,
+                color: Color.fromARGB(255, 221, 213, 212),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -70,7 +70,7 @@ class _MyAppExtensionState extends State<MyAppExtension> {
                           ),
                         );
                       },
-                      child: const Text('My Record'),
+                      child: const Text('Start a game'),
                     ),
                   ],
                 ),
