@@ -1,5 +1,8 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:math';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 void main() {
   runApp(MyApp());
 }
@@ -63,7 +66,7 @@ class _MyAppExtensionState extends State<MyAppExtension> {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (BuildContext buildContext) =>
-                                const NextPage(),
+                                const QuestionPage(),
                           ),
                         );
                       },
@@ -100,13 +103,151 @@ class _MyAppExtensionState extends State<MyAppExtension> {
   }
 }
 
+
 class NextPage extends StatelessWidget {
-  const NextPage({super.key});
-  
+  const NextPage({super.key});   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
+    );
+  }
+}
+
+
+class QuestionPage extends StatefulWidget {
+  const QuestionPage({Key? key}) : super(key: key);
+
+  @override
+  _QuestionPageState createState() => _QuestionPageState();
+}
+
+class _QuestionPageState extends State<QuestionPage> {
+  late List<Map<String, dynamic>> questions;
+  late Map<String, dynamic> currentQuestion = {};
+  late String selectedAnswer = "";
+  bool isAnswered = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loadQuestions();
+  }
+
+  Future<void> loadQuestions() async {
+    var data = await rootBundle.loadString("images/questions/questions.json");
+    setState(() {
+      questions = List<Map<String, dynamic>>.from(jsonDecode(data));
+      // Select a random question initially
+      selectRandomQuestion();
+    });
+  }
+
+  void selectRandomQuestion() {
+  setState(() {
+    final random = Random();
+    currentQuestion = questions[random.nextInt(questions.length)];
+    isAnswered = false;
+    selectedAnswer = "";
+  });
+}
+
+  void checkAnswer() {
+    setState(() {
+      isAnswered = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Question Page"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              currentQuestion['question'] ?? '',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 16),
+            if (!isAnswered)
+              Column(
+                children: [
+                  RadioListTile(
+                    title: Text(currentQuestion['A'] ?? ''),
+                    value: 'A',
+                    groupValue: selectedAnswer,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedAnswer = value.toString();
+                      });
+                    },
+                  ),
+                  RadioListTile(
+                    title: Text(currentQuestion['B'] ?? ''),
+                    value: 'B',
+                    groupValue: selectedAnswer,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedAnswer = value.toString();
+                      });
+                    },
+                  ),
+                  RadioListTile(
+                    title: Text(currentQuestion['C'] ?? ''),
+                    value: 'C',
+                    groupValue: selectedAnswer,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedAnswer = value.toString();
+                      });
+                    },
+                  ),
+                  RadioListTile(
+                    title: Text(currentQuestion['D'] ?? ''),
+                    value: 'D',
+                    groupValue: selectedAnswer,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedAnswer = value.toString();
+                      });
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      checkAnswer();
+                    },
+                    child: Text("Submit Answer"),
+                  ),
+                ],
+              )
+            else
+              Text(
+                selectedAnswer == currentQuestion['answer']
+                    ? 'Correct!'
+                    : 'Wrong! The correct answer is ${currentQuestion['answer']}.',
+                style: TextStyle(
+                  color: selectedAnswer == currentQuestion['answer']
+                      ? Colors.green
+                      : Colors.red,
+                  fontSize: 18,
+                ),
+              ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                selectRandomQuestion();
+              },
+              child: Text("Next Question"),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
