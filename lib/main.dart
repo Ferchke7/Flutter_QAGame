@@ -56,7 +56,7 @@ class _MyAppExtensionState extends State<MyAppExtension> {
                           backgroundColor: Colors.orange),
                       onPressed: () {
                         setState(() {
-                          buttomName = '(:';
+                          buttomName == ':)' ? buttomName = "(:" : buttomName = ":)";
                         });
                       },
                       child: Text(buttomName),
@@ -90,7 +90,7 @@ class _MyAppExtensionState extends State<MyAppExtension> {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(label: 'Home', icon: Icon(Icons.home)),
-          BottomNavigationBarItem(label: 'Game', icon: Icon(Icons.gamepad))
+          BottomNavigationBarItem(label: 'Records', icon: Icon(Icons.gamepad))
         ],
         currentIndex: currentIndex,
         onTap: (int index) {
